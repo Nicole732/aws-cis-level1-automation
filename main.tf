@@ -35,6 +35,7 @@ resource "random_integer" "unique_id" {
 
 resource "aws_s3_bucket" "config_bucket" {
   bucket = "my-config-bucket-${random_pet.bucket_name.id}-${random_integer.unique_id.result}" #generates a unique bucket name
+  force_destroy = true  #for dev, to destroy bucket and objects
 }
 #attach a bucket policy that allows AWS Config to put objects in s3 bucket
 resource "aws_s3_bucket_policy" "config_bucket_policy" {
