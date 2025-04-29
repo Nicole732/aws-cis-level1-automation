@@ -16,7 +16,7 @@ resource "aws_sns_topic_subscription" "current_contact_details_subscription" {
 resource "null_resource" "send_update_contact_details" {
   provisioner "local-exec" {
     command = <<EOT 
-    aws sns publish --topic-arn ${aws_sns_topic.current_contact_details.arn}  
+    aws sns publish --topic-arn "${aws_sns_topic.current_contact_details.arn}"  
     --subject "Update Your AWS Contact Information"  
     --message "Hi! Please ensure your AWS account contact details are up-to-date as per CIS AWS Foundations Benchmark 1.1"   
   EOT
