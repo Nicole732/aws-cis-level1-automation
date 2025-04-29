@@ -12,13 +12,17 @@ resource "aws_sns_topic_subscription" "current_contact_details_subscription" {
   endpoint  = var.contact_email
 }
 
-
-#resource "null_resource" "send_update_contact_details" {
-# provisioner "local-exec" {
-#   command = "aws sns publish --topic-arn ${aws_sns_topic.current_contact_details.arn} --subject \"Update Your AWS Contact Information\" --message \"Hi! Please ensure your AWS account contact details are up-to-date as per CIS AWS Foundations Benchmark 1.1.\""
-#}
-#  depends_on = [aws_sns_topic.current_contact_details]
-#}
+#create a dummy resources to run command using local-exec provisioner
+resource "null_resource" "send_update_contact_details" {
+  provisioner "local-exec" {
+    command = <<EOT 
+    aws sns publish --topic-arn ${aws_sns_topic.current_contact_details.arn}  
+    --subject "Update Your AWS Contact Information"  
+    --message "Hi! Please ensure your AWS account contact details are up-to-date as per CIS AWS Foundations Benchmark 1.1"   
+  EOT
+  }
+  depends_on = [aws_sns_topic.current_contact_details]
+}
 
 
 #Settings for AWS Config
@@ -34,8 +38,8 @@ resource "random_integer" "unique_id" {
 }
 
 resource "aws_s3_bucket" "config_bucket" {
-  bucket = "my-config-bucket-${random_pet.bucket_name.id}-${random_integer.unique_id.result}" #generates a unique bucket name
-  force_destroy = true  #for dev, to destroy bucket and objects
+  bucket        = "my-config-bucket-${random_pet.bucket_name.id}-${random_integer.unique_id.result}" #generates a unique bucket name
+  force_destroy = true                                                                               #for dev, to destroy bucket and objects
 }
 #attach a bucket policy that allows AWS Config to put objects in s3 bucket
 resource "aws_s3_bucket_policy" "config_bucket_policy" {
@@ -105,7 +109,7 @@ resource "aws_config_delivery_channel" "main" {
   s3_bucket_name = aws_s3_bucket.config_bucket.bucket
   #add sns notification when rule in non compliant mode
   # sns_topic_arn  = aws_sns_topic.current_contact_details.arn #use different subscription
-  depends_on     = [aws_config_configuration_recorder.main]
+  depends_on = [aws_config_configuration_recorder.main]
 }
 
 # Option: Use  AMAZON SNS topic to stream configuration changes
