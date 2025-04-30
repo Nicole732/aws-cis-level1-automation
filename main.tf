@@ -16,8 +16,10 @@ resource "aws_sns_topic_subscription" "current_contact_details_subscription" {
 resource "null_resource" "send_update_contact_details" {
   provisioner "local-exec" {
     command = "bash ./scripts/sen_update.sh"
+    on_failure = continue
   }
   depends_on = [aws_sns_topic.current_contact_details]
+
 }
 
 
