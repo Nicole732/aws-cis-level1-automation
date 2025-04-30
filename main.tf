@@ -15,11 +15,7 @@ resource "aws_sns_topic_subscription" "current_contact_details_subscription" {
 #create a dummy resources to run command using local-exec provisioner
 resource "null_resource" "send_update_contact_details" {
   provisioner "local-exec" {
-    command = <<EOT 
-    aws sns publish --topic-arn "${aws_sns_topic.current_contact_details.arn}"  
-    --subject "Update Your AWS Contact Information"  
-    --message "Hi! Please ensure your AWS account contact details are up-to-date as per CIS AWS Foundations Benchmark 1.1"   
-  EOT
+    command = "bash ./scripts/sen_update.sh"
   }
   depends_on = [aws_sns_topic.current_contact_details]
 }
