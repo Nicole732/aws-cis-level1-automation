@@ -1,6 +1,3 @@
-provider "aws" {
-  region = "us-east-1"
-}
 
 module "sns" {
   source      = "../../modules/sns_topic"
@@ -8,12 +5,17 @@ module "sns" {
   email       = var.alert_email
 }
 
+module "iam_role" {
+  source     = "../../modules/iam_lambda_role"
+  role_name  = "cis-contact-check-role"
+}
+
 module "lambda" {
   source                    = "../../modules/lambda_function"
   function_name             = "cis_contact_check"
   zip_file                  = "lambda_contact_check.zip"
   handler                   = "lambda_function.lambda_handler"
-  lambda_execution_role_arn = var.lambda_execution_role_arn
+  lambda_execution_role_arn = module.iam_role.role_arn
   environment_variables     = {
     SNS_TOPIC_ARN = module.sns.topic_arn
   }
