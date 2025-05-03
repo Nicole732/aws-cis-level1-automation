@@ -1,4 +1,4 @@
-variable "function_name" {
+variable "lambda_function_name" {
   type = string
 }
 
@@ -16,7 +16,7 @@ variable "runtime" {
   default = "python3.9"
 }
 
-variable "lambda_execution_role_arn" {
+variable "lambda_exec_role_arn" {
   type = string
 }
 

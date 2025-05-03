@@ -17,8 +17,12 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
-#Iam 1.1
-variable "contact_email" {
+#CIS 1.1
+variable "alert_email" {
   description = "The email address to notify about maintaining AWS contact details"
   type        = string
+}
+
+variable "lambda_execution_role_arn" {
+  type = string
 }
