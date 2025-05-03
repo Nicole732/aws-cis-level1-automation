@@ -7,7 +7,7 @@ module "sns" {
 
 module "iam_role" {
   source     = "../modules/iam_lambda_role"
-  role_name  = "cis11-contact-check-role"
+  role_name  = "cis1_1-contact-check-role"
 }
 
 module "lambda" {
@@ -24,7 +24,7 @@ module "lambda" {
 
 module "schedule" {
   source                = "../modules/cloudwatch_schedule"
-  schedule_name         = "cis_contact_check_schedule"
+  schedule_name         = "cis1_1_contact_check_schedule"
   schedule_expression   = "rate(1 day)"
   lambda_function_arn   = module.lambda.this.arn
   lambda_function_name  = module.lambda.this.function_name
