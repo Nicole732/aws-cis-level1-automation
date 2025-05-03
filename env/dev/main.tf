@@ -17,18 +17,18 @@ resource "random_integer" "unique_id" {
 ### CIS 1-1 ###
 
 module "sns" {
-  source     = "../modules/sns_topic"
+  source     = "../../modules/sns_topic"
   topic_name = "cis11-contact-check-topic"
   email      = var.alert_email
 }
 
 module "iam_role" {
-  source    = "../modules/iam_lambda_role"
+  source    = "../../modules/iam_lambda_role"
   role_name = "cis1_1-contact-check-role"
 }
 
 module "lambda" {
-  source               = "../modules/lambda_function"
+  source               = "../../modules/lambda_function"   
   lambda_function_name = "cis1_1_contact_check" #module.lambda.lambda_function_name
   zip_file             = "lambda_contact_check.zip"
   handler              = "lambda_function.lambda_handler"
@@ -40,7 +40,7 @@ module "lambda" {
 }
 
 module "schedule" {
-  source               = "../modules/cloudwatch_schedule"
+  source               = "../../modules/cloudwatch_schedule"
   schedule_name        = "cis1_1_contact_check_schedule"
   schedule_expression  = "rate(1 day)"
   lambda_function_arn  = module.lambda.this.arn
