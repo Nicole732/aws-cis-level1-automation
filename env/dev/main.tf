@@ -43,6 +43,6 @@ module "schedule" {
   source               = "../../modules/cloudwatch_schedule"
   schedule_name        = "cis1_1_contact_check_schedule"
   schedule_expression  = "rate(1 day)"
-  lambda_function_arn  = module.lambda.this.arn
-  lambda_function_name = module.lambda.lambda_function_arn
+  lambda_function_arn  = module.lambda.lambda_function_arn
+  lambda_function_name = module.lambda.lambda_function_name
 }
