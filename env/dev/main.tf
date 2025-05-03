@@ -25,9 +25,11 @@ module "sns" {
 module "iam_role" {
   source    = "../../modules/iam_lambda_role"
   role_name = "cis1_1-contact-check-role"
+  topic_arn = module.sns.topic_arn
 }
 
 #create zip file of lambda_function and save in same directory
+#deploy and  test  lambda
 module "lambda" {
   source               = "../../modules/lambda_function"
   lambda_function_name = "cis1_1_contact_check" #module.lambda.lambda_function_name
@@ -43,7 +45,8 @@ module "lambda" {
 module "schedule" {
   source               = "../../modules/cloudwatch_schedule"
   schedule_name        = "cis1_1_contact_check_schedule"
-  schedule_expression  = "rate(1 day)"
+  #"rate(1 day)" #"rate(5 minutes) for testing
+  schedule_expression  = "rate(5 minutes)"
   lambda_function_arn  = module.lambda.lambda_function_arn
   lambda_function_name = module.lambda.lambda_function_name
 }
