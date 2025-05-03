@@ -27,10 +27,11 @@ module "iam_role" {
   role_name = "cis1_1-contact-check-role"
 }
 
+#create zip file of lambda_function and save in same directory
 module "lambda" {
   source               = "../../modules/lambda_function"
   lambda_function_name = "cis1_1_contact_check" #module.lambda.lambda_function_name
-  zip_file             = "lambda_contact_check.zip"
+  zip_file             = "lambda_function.zip"
   handler              = "lambda_function.lambda_handler"
   lambda_exec_role_arn = module.iam_role.role_arn
 
