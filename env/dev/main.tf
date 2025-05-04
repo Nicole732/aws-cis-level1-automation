@@ -50,11 +50,13 @@ module "lambda" {
 module "schedule" {
   source        = "../../modules/cloudwatch_schedule"
   schedule_name = "cis1_1_contact_check_schedule"
-  #"rate(1 day)" #"rate(5 minutes) for testing
+  #"rate(1 day)" for prod #"rate(5 minutes) for testing
   schedule_expression  = "rate(5 minutes)"
   lambda_function_arn  = module.lambda.lambda_function_arn
   lambda_function_name = module.lambda.lambda_function_name
 }
+
+## CIS AWS COnfig Managed Rules ####
 
 resource "aws_s3_bucket" "config_bucket" {
   bucket        = "my-config-bucket-${random_pet.bucket_name.id}-${random_integer.unique_id.result}" #generates a unique bucket name
