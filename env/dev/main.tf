@@ -58,16 +58,32 @@ module "schedule" {
 # AWS Config managed rule: iam-root-acces-key-check
 
 module "cis_1_3_root_key_check" {
-  source            = "../../modules/aws_config"
+  source            = "../../modules/aws_config_rule"
   rule_name         = "cis-1-3-root-access-key-check"
   description       = "CIS 1.3: Ensure no root user account access key exists"
   source_identifier = "IAM_ROOT_ACCESS_KEY_CHECK"
 }
 
 module "cis_1_4_root_mfa_check" {
-  source            = "../../modules/aws_config"
+  source            = "../../modules/aws_config_rule"
   rule_name         = "cis-1-4-root-mfa-check"
   description       = "CIS 1.4: Ensure MFA is enabled for the root user"
   source_identifier = "ROOT_ACCOUNT_MFA_ENABLED" #root-account-mfa-enabled
+
+}
+
+module "cis_1_7_iam_password_policy" {
+  source            = "../../modules/aws_config_rule"
+  rule_name         = "cis-1-7-check-iam-policy"
+  description       = "CIS Ensure IAM password policy requires minimum length of 14 or greater Ensure IAM password policy requires minimum length of 14 or greater"
+  source_identifier = "IAM_PASSWORD_POLICY"
+
+}
+
+module "cis_1_8_root_mfa_console_users" {
+  source            = "../../modules/aws_config_rule"
+  rule_name         = "cis-1-4-root-mfa-check"
+  description       = "CIS 1.9: Ensure MFA is enabled for console users"
+  source_identifier = "MFA_ENABLED_FOR_IAM_CONSOLE_ACCESS" 
 
 }
