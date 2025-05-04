@@ -257,4 +257,33 @@ module "cis_1_10_initial_access_key" {
 }
 
 ## Detect and  alert controls with CloudWatch (Alarms)  + SNS
+module "sns_cloudwatch_alarms" {
+  source     = "../../modules/sns_topic"
+  topic_name = "cis-cloudwatch-alarms"
+  email      = var.alert_email
+}
+
 ## CIS: 4.3 Ensure usage of the 'root' account is monitored 
+module "cis_4_3_root_usage" {
+  source                = "../modules/cloudwatch_alert"
+  log_group_name        = "/aws/cloudtrail/logs"
+  filter_pattern        = "{ ($.userIdentity.type = \\"Root\\") && ($.eventType != \\"AwsServiceEvent\\") }"
+  metric_name           = "RootAccountUsageMetric"
+  metric_filter_name    = "CIS-4-3-Root-Usage"
+  alarm_name            = "CIS-4.3-RootAccountUsageAlarm"
+  alarm_description     = "Triggers on usage of the AWS root account"
+  sns_topic_arn         = module.sns_cloudwatch_alarms.arn
+}
+
+
+## CIS 4.8: Ensure S3 bucket policy changes are monitored 
+module "cis_4_8_s3_policy_change" {
+  source                = "../modules/cloudwatch_alert"
+  log_group_name        = "/aws/cloudtrail/logs"
+  filter_pattern        = "{ ($.eventName = \\"PutBucketPolicy\\") || ($.eventName = \\"DeleteBucketPolicy\\") || ($.eventName = \\"PutBucketAcl\\") || ($.eventName = \\"PutBucketCors\\") || ($.eventName = \\"PutBucketLogging\\") || ($.eventName = \\"PutBucketReplication\\") || ($.eventName = \\"PutBucketLifecycle\\") || ($.eventName = \\"PutBucketVersioning\\") }"
+  metric_name           = "S3PolicyChangeMetric"
+  metric_filter_name    = "CIS-4-8-S3-Policy-Change"
+  alarm_name            = "CIS-4.8-S3PolicyChangeAlarm"
+  alarm_description     = "Triggers on changes to S3 bucket policies or permissions"
+  sns_topic_arn         = module.sns_cloudwatch_alarms.arn
+}
