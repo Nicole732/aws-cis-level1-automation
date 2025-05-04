@@ -50,6 +50,7 @@ module "lambda" {
 module "schedule" {
   source        = "../../modules/cloudwatch_schedule"
   schedule_name = "cis1_1_contact_check_schedule"
+  description = "CIS 1.1 Alert to maintain a current contact details"
   #"rate(1 day)" for prod #"rate(5 minutes) for testing
   schedule_expression  = "rate(5 minutes)"
   lambda_function_arn  = module.lambda.lambda_function_arn
