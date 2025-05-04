@@ -15,6 +15,9 @@ resource "random_integer" "unique_id" {
 }
 
 ### CIS 1-1 ###
+#CIS 1.1: Maintain current contact details#
+#Continuously checks if control is in place and alerts for manual remediation
+#Lambda + CloudWatch EnventBridge (cron) + SNS
 
 module "sns" {
   source     = "../../modules/sns_topic"
@@ -50,3 +53,9 @@ module "schedule" {
   lambda_function_arn  = module.lambda.lambda_function_arn
   lambda_function_name = module.lambda.lambda_function_name
 }
+
+### CIS 1.3: Ensure no 'root' user account access key exists
+# AWS Config continuously monitor control and returns Compliant/Non Compliant Status
+# AWS Config managed rule: iam-root-acces-key-check
+
+
