@@ -265,9 +265,11 @@ module "sns_cloudwatch_alarms" {
 
 ## CIS: 4.3 Ensure usage of the 'root' account is monitored 
 module "cis_4_3_root_usage" {
-  source                = "../modules/cloudwatch_alert"
+  source                = "../../modules/cloudwatch_alarm"
   log_group_name        = "/aws/cloudtrail/logs"
-  filter_pattern        = "{ ($.userIdentity.type = \\"Root\\") && ($.eventType != \\"AwsServiceEvent\\") }"
+  filter_pattern = <<EOF
+{ ($.userIdentity.type = "Root") && ($.eventType != "AwsServiceEvent") }
+  EOF
   metric_name           = "RootAccountUsageMetric"
   metric_filter_name    = "CIS-4-3-Root-Usage"
   alarm_name            = "CIS-4.3-RootAccountUsageAlarm"
@@ -278,9 +280,19 @@ module "cis_4_3_root_usage" {
 
 ## CIS 4.8: Ensure S3 bucket policy changes are monitored 
 module "cis_4_8_s3_policy_change" {
-  source                = "../modules/cloudwatch_alert"
+  source                = "../../modules/cloudwatch_alarm"
   log_group_name        = "/aws/cloudtrail/logs"
-  filter_pattern        = "{ ($.eventName = \\"PutBucketPolicy\\") || ($.eventName = \\"DeleteBucketPolicy\\") || ($.eventName = \\"PutBucketAcl\\") || ($.eventName = \\"PutBucketCors\\") || ($.eventName = \\"PutBucketLogging\\") || ($.eventName = \\"PutBucketReplication\\") || ($.eventName = \\"PutBucketLifecycle\\") || ($.eventName = \\"PutBucketVersioning\\") }"
+  #filter_pattern        = "{ ($.eventName = \\"PutBucketPolicy\\") || ($.eventName = \\"DeleteBucketPolicy\\") || ($.eventName = \\"PutBucketAcl\\") || ($.eventName = \\"PutBucketCors\\") || ($.eventName = \\"PutBucketLogging\\") || ($.eventName = \\"PutBucketReplication\\") || ($.eventName = \\"PutBucketLifecycle\\") || ($.eventName = \\"PutBucketVersioning\\") }"
+  filter_pattern = <<EOF
+{ ($.eventName = "PutBucketPolicy") ||
+  ($.eventName = "DeleteBucketPolicy") ||
+  ($.eventName = "PutBucketAcl") ||
+  ($.eventName = "PutBucketCors") ||
+  ($.eventName = "PutBucketLogging") ||
+  ($.eventName = "PutBucketReplication") ||
+  ($.eventName = "PutBucketLifecycle") ||
+  ($.eventName = "PutBucketVersioning") }
+EOF
   metric_name           = "S3PolicyChangeMetric"
   metric_filter_name    = "CIS-4-8-S3-Policy-Change"
   alarm_name            = "CIS-4.8-S3PolicyChangeAlarm"
