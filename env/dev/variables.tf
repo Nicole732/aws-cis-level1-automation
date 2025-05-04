@@ -24,7 +24,7 @@ variable "alert_email" {
 }
 
 #CIS 1.3
-variable "config_role_arn" {
-  description = "The ARN of the IAM role used by AWS Config"
-  type        = string
-}
+#variable "config_role_arn" {
+#  description = "The ARN of the IAM role used by AWS Config"
+#  type        = string
+#}
