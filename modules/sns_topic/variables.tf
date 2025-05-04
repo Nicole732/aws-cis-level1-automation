@@ -5,3 +5,4 @@ variable "topic_name" {
 variable "email" {
   type = string
 }
+

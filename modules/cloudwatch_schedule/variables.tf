@@ -8,7 +8,7 @@ variable "schedule_expression" {
 }
 
 variable "description" {
-  type = string
+  type    = string
   default = ""
 }
 

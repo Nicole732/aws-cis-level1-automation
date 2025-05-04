@@ -37,9 +37,9 @@ resource "aws_iam_role_policy" "additional_permissions" {
         Resource = var.topic_arn
       },
       {
-        Sid    = "AllowDescribeOrg",
-        Effect = "Allow",
-        Action = "organizations:DescribeOrganization",
+        Sid      = "AllowDescribeOrg",
+        Effect   = "Allow",
+        Action   = "organizations:DescribeOrganization",
         Resource = "*"
       }
 

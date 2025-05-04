@@ -7,12 +7,12 @@ variable "zip_file" {
 }
 
 variable "handler" {
-  type = string
+  type    = string
   default = "lambda_function.lambda_handler"
 }
 
 variable "runtime" {
-  type = string
+  type    = string
   default = "python3.9"
 }
 
@@ -21,6 +21,6 @@ variable "lambda_exec_role_arn" {
 }
 
 variable "environment_variables" {
-  type = map(string)
+  type    = map(string)
   default = {}
 }
