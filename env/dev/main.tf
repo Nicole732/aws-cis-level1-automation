@@ -207,7 +207,7 @@ module "cis_1_9_mfa_iam_console_users" {
 #### CIS 1.6: Detects Root Account Usage ###
 
 module "cis_1_6_root_user" {
-  source        = "../modules/eventbridge_alert"
+  source        = "../../modules/eventbridge_alert"
   rule_name     = "cis-1-6-root-activity"
   description   = "CIS 1.6: Alert on any use of root account"
   sns_topic_arn = module.sns.arn
@@ -228,7 +228,7 @@ module "cis_1_6_root_user" {
 
 #### CIS 1.10	Detectand alerts on IAM user creation with access key setup ###
 module "cis_1_10_initial_access_key" {
-  source        = "../modules/eventbridge_alert"
+  source        = "../../modules/eventbridge_alert"
   rule_name     = "cis-1-10-access-key-at-user-creation"
   description   = "CIS 1.10: Alert on creation of IAM user with access key"
   sns_topic_arn = module.sns.arn
