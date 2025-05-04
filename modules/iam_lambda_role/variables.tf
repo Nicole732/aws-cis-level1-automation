@@ -3,3 +3,9 @@ variable "role_name" {
   description = "Name of the Lambda execution role"
   type        = string
 }
+
+variable "topic_arn" {
+  description = "ARN of the SNS topic to allow publishing to"
+  type        = string
+}
+
