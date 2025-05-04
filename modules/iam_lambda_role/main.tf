@@ -23,3 +23,27 @@ resource "aws_iam_role_policy_attachment" "account_access" {
   role       = aws_iam_role.lambda_exec_role.name
   policy_arn = "arn:aws:iam::aws:policy/AWSAccountManagementFullAccess"
 }
+
+resource "aws_iam_role_policy" "additional_permissions" {
+  name = "lamdba-permissions"
+  role = aws_iam_role.lambda_exec_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect   = "Allow",
+        Action   = "sns:Publish",
+        Resource = var.topic_arn
+      },
+      {
+        Sid    = "AllowDescribeOrg",
+        Effect = "Allow",
+        Action = "organizations:DescribeOrganization",
+        Resource = "*"
+      }
+
+
+    ]
+  })
+}
