@@ -50,7 +50,7 @@ module "lambda" {
 module "schedule" {
   source        = "../../modules/cloudwatch_schedule"
   schedule_name = "cis1_1_contact_check_schedule"
-  description = "CIS 1.1 Alert to maintain a current contact details"
+  description   = "CIS 1.1 Alert to maintain a current contact details"
   #"rate(1 day)" for prod #"rate(5 minutes) for testing
   schedule_expression  = "rate(5 minutes)"
   lambda_function_arn  = module.lambda.lambda_function_arn
@@ -265,25 +265,27 @@ module "sns_cloudwatch_alarms" {
 
 ## CIS: 4.3 Ensure usage of the 'root' account is monitored 
 module "cis_4_3_root_usage" {
-  source                = "../../modules/cloudwatch_alarm"
-  log_group_name        = "/aws/cloudtrail/logs"
-  filter_pattern = <<EOF
+  source             = "../../modules/cloudwatch_alarm"
+  create_log_group   = false
+  log_group_name     = "/aws/cloudtrail/logs/cis4-3"
+  filter_pattern     = <<EOF
 { ($.userIdentity.type = "Root") && ($.eventType != "AwsServiceEvent") }
   EOF
-  metric_name           = "RootAccountUsageMetric"
-  metric_filter_name    = "CIS-4-3-Root-Usage"
-  alarm_name            = "CIS-4.3-RootAccountUsageAlarm"
-  alarm_description     = "Triggers on usage of the AWS root account"
-  topic_arn         = module.sns_cloudwatch_alarms.topic_arn
+  metric_name        = "RootAccountUsageMetric"
+  metric_filter_name = "CIS-4-3-Root-Usage"
+  alarm_name         = "CIS-4.3-RootAccountUsageAlarm"
+  alarm_description  = "Triggers on usage of the AWS root account"
+  topic_arn          = module.sns_cloudwatch_alarms.topic_arn
 }
 
 
 ## CIS 4.8: Ensure S3 bucket policy changes are monitored 
 module "cis_4_8_s3_policy_change" {
-  source                = "../../modules/cloudwatch_alarm"
-  log_group_name        = "/aws/cloudtrail/logs"
+  source           = "../../modules/cloudwatch_alarm"
+  create_log_group = false
+  log_group_name   = "/aws/cloudtrail/logs/4-8"
   #filter_pattern        = "{ ($.eventName = \\"PutBucketPolicy\\") || ($.eventName = \\"DeleteBucketPolicy\\") || ($.eventName = \\"PutBucketAcl\\") || ($.eventName = \\"PutBucketCors\\") || ($.eventName = \\"PutBucketLogging\\") || ($.eventName = \\"PutBucketReplication\\") || ($.eventName = \\"PutBucketLifecycle\\") || ($.eventName = \\"PutBucketVersioning\\") }"
-  filter_pattern = <<EOF
+  filter_pattern     = <<EOF
 { ($.eventName = "PutBucketPolicy") ||
   ($.eventName = "DeleteBucketPolicy") ||
   ($.eventName = "PutBucketAcl") ||
@@ -293,9 +295,9 @@ module "cis_4_8_s3_policy_change" {
   ($.eventName = "PutBucketLifecycle") ||
   ($.eventName = "PutBucketVersioning") }
 EOF
-  metric_name           = "S3PolicyChangeMetric"
-  metric_filter_name    = "CIS-4-8-S3-Policy-Change"
-  alarm_name            = "CIS-4.8-S3PolicyChangeAlarm"
-  alarm_description     = "Triggers on changes to S3 bucket policies or permissions"
-  topic_arn         = module.sns_cloudwatch_alarms.topic_arn
+  metric_name        = "S3PolicyChangeMetric"
+  metric_filter_name = "CIS-4-8-S3-Policy-Change"
+  alarm_name         = "CIS-4.8-S3PolicyChangeAlarm"
+  alarm_description  = "Triggers on changes to S3 bucket policies or permissions"
+  topic_arn          = module.sns_cloudwatch_alarms.topic_arn
 }
