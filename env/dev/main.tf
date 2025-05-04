@@ -274,7 +274,7 @@ module "cis_4_3_root_usage" {
   metric_filter_name    = "CIS-4-3-Root-Usage"
   alarm_name            = "CIS-4.3-RootAccountUsageAlarm"
   alarm_description     = "Triggers on usage of the AWS root account"
-  sns_topic_arn         = module.sns_cloudwatch_alarms.arn
+  topic_arn         = module.sns_cloudwatch_alarms.topic_arn
 }
 
 
@@ -297,5 +297,5 @@ EOF
   metric_filter_name    = "CIS-4-8-S3-Policy-Change"
   alarm_name            = "CIS-4.8-S3PolicyChangeAlarm"
   alarm_description     = "Triggers on changes to S3 bucket policies or permissions"
-  sns_topic_arn         = module.sns_cloudwatch_alarms.arn
+  topic_arn         = module.sns_cloudwatch_alarms.topic_arn
 }
