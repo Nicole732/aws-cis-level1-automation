@@ -23,7 +23,7 @@ resource "random_integer" "unique_id" {
 
 module "sns" {
   source     = "../../modules/sns_topic"
-  topic_name = "cis11-contact-check-topic"
+  topic_name = "cis-compliance-alerts"
   email      = var.alert_email
 }
 
@@ -101,7 +101,7 @@ resource "aws_iam_role" "config_role" {
     Version = "2012-10-17",
     Statement = [
       {
-        
+
         Effect = "Allow",
         Principal = {
           Service = "config.amazonaws.com"
@@ -168,7 +168,7 @@ module "cis_1_4_root_mfa_check" {
   rule_name         = "cis-1-4-root-mfa-check"
   description       = "CIS 1.4: Ensure MFA is enabled for the root user"
   source_identifier = "ROOT_ACCOUNT_MFA_ENABLED" #root-account-mfa-enabled
-  
+
   depends_on = [
     aws_config_configuration_recorder_status.default,
     aws_config_delivery_channel.main
@@ -191,11 +191,11 @@ module "cis_1_7_iam_password_policy" {
 }
 
 #CIS 1.9 Ensure multi-factor authentication (MFA) is enabled for all IAM users that have a console password 
-module "cis_1_9_root_mfa_console_users" {
+module "cis_1_9_mfa_iam_console_users" {
   source            = "../../modules/aws_config_rule"
   rule_name         = "cis-1-9-console-mfa-check"
   description       = "CIS 1.9: Ensure MFA is enabled for console users"
-  source_identifier = "MFA_ENABLED_FOR_IAM_CONSOLE_ACCESS" 
+  source_identifier = "MFA_ENABLED_FOR_IAM_CONSOLE_ACCESS"
 
   depends_on = [
     aws_config_configuration_recorder_status.default,
@@ -203,5 +203,50 @@ module "cis_1_9_root_mfa_console_users" {
   ]
 }
 
+### Event driven controls: CloudWatch(Event Bridge) + CloudTrail + SNS  
+#### CIS 1.6: Detects Root Account Usage ###
 
-#####
+module "cis_1_6_root_user" {
+  source        = "../modules/eventbridge_alert"
+  rule_name     = "cis-1-6-root-activity"
+  description   = "CIS 1.6: Alert on any use of root account"
+  sns_topic_arn = module.sns.arn
+
+  event_pattern = jsonencode({
+    source = ["aws.signin", "aws.console", "aws.cloudtrail"]
+    "detail-type" = [
+      "AWS Console Sign In via CloudTrail",
+      "AWS API Call via CloudTrail"
+    ]
+    detail = {
+      userIdentity = {
+        type = ["Root"]
+      }
+    }
+  })
+}
+
+#### CIS 1.10	Detectand alerts on IAM user creation with access key setup ###
+module "cis_1_10_initial_access_key" {
+  source        = "../modules/eventbridge_alert"
+  rule_name     = "cis-1-10-access-key-at-user-creation"
+  description   = "CIS 1.10: Alert on creation of IAM user with access key"
+  sns_topic_arn = module.sns.arn
+
+  event_pattern = jsonencode({
+    source        = ["aws.iam"],
+    "detail-type" = ["AWS API Call via CloudTrail"],
+    detail = {
+      eventName = ["CreateUser", "CreateAccessKey", "CreateLoginProfile"]
+      responseElements = {
+        accessKey = {
+          accessKeyId = [{
+            exists = true
+          }]
+        }
+      }
+    }
+  })
+}
+
+
