@@ -75,14 +75,14 @@ module "cis_1_4_root_mfa_check" {
 module "cis_1_7_iam_password_policy" {
   source            = "../../modules/aws_config_rule"
   rule_name         = "cis-1-7-check-iam-policy"
-  description       = "CIS Ensure IAM password policy requires minimum length of 14 or greater Ensure IAM password policy requires minimum length of 14 or greater"
+  description       = "CIS 1.7: Ensure IAM password policy requires minimum length of 14 or greater Ensure IAM password policy requires minimum length of 14 or greater"
   source_identifier = "IAM_PASSWORD_POLICY"
 
 }
 
 module "cis_1_8_root_mfa_console_users" {
   source            = "../../modules/aws_config_rule"
-  rule_name         = "cis-1-4-root-mfa-check"
+  rule_name         = "cis-1-9-console-mfa-check"
   description       = "CIS 1.9: Ensure MFA is enabled for console users"
   source_identifier = "MFA_ENABLED_FOR_IAM_CONSOLE_ACCESS" 
 
