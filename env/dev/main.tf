@@ -1,5 +1,4 @@
 #This page describes configurations for CIS AWS Foundations Benchmark level 1 controls"
-
 # Identity and Access Management Coontrols #
 #CIS 1.1: Maintain current contact details#
 
