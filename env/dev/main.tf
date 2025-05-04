@@ -2,6 +2,8 @@
 # Identity and Access Management Coontrols #
 #CIS 1.1: Maintain current contact details#
 
+data "aws_caller_identity" "current" {}
+
 #used to set uup   unique resourrces names
 resource "random_pet" "bucket_name" {
   length    = 2
@@ -12,6 +14,7 @@ resource "random_integer" "unique_id" {
   min = 100
   max = 999
 }
+
 
 ### CIS 1-1 ###
 #CIS 1.1: Maintain current contact details#
@@ -53,15 +56,106 @@ module "schedule" {
   lambda_function_name = module.lambda.lambda_function_name
 }
 
+resource "aws_s3_bucket" "config_bucket" {
+  bucket        = "my-config-bucket-${random_pet.bucket_name.id}-${random_integer.unique_id.result}" #generates a unique bucket name
+  force_destroy = true                                                                               #for dev, to destroy bucket and objects
+}
+#attach a bucket policy that allows AWS Config to put objects in s3 bucket
+resource "aws_s3_bucket_policy" "config_bucket_policy" {
+  bucket = aws_s3_bucket.config_bucket.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "config.amazonaws.com"
+        },
+        Action = [
+          "s3:GetBucketAcl",
+          "s3:PutObject"
+        ],
+        Resource = [
+          "${aws_s3_bucket.config_bucket.arn}",
+          "${aws_s3_bucket.config_bucket.arn}/*"
+        ],
+        Condition = {
+          StringEquals = {
+            "aws:SourceAccount" = data.aws_caller_identity.current.account_id
+          }
+        }
+      }
+    ]
+  })
+}
+
+# IAM Role for AWS Config
+resource "aws_iam_role" "config_role" {
+  name = "aws-config-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        
+        Effect = "Allow",
+        Principal = {
+          Service = "config.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+
+      }
+    ]
+  })
+}
+
+# Attach managed policy for AWS Config
+resource "aws_iam_role_policy_attachment" "config_role_attachment" {
+  role = aws_iam_role.config_role.name
+  #this account is part of an AWS organization 
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSConfigRoleForOrganizations"
+  #policy_arn = "arn:aws:iam::aws:policy/service-role/AWSConfigRole #if account  not part of an organization
+}
+
+# AWS Config Recorder
+resource "aws_config_configuration_recorder" "main" {
+  name     = "default"
+  role_arn = aws_iam_role.config_role.arn
+
+}
+
+# AWS Config Delivery Channel
+resource "aws_config_delivery_channel" "main" {
+  name           = "default"
+  s3_bucket_name = aws_s3_bucket.config_bucket.bucket
+  #add sns notification when rule in non compliant mode
+  #sns_topic_arn  = module.sns.topic.arn 
+  depends_on = [aws_config_configuration_recorder.main]
+}
+
+resource "aws_config_configuration_recorder_status" "default" {
+  name       = aws_config_configuration_recorder.main.name
+  is_enabled = true
+
+  depends_on = [aws_config_delivery_channel.main]
+}
+
 ### CIS 1.3: Ensure no 'root' user account access key exists
 # AWS Config continuously monitor control and returns Compliant/Non Compliant Status
 # AWS Config managed rule: iam-root-acces-key-check
+
 
 module "cis_1_3_root_key_check" {
   source            = "../../modules/aws_config_rule"
   rule_name         = "cis-1-3-root-access-key-check"
   description       = "CIS 1.3: Ensure no root user account access key exists"
   source_identifier = "IAM_ROOT_ACCESS_KEY_CHECK"
+
+  config_depends_on = [
+    aws_config_configuration_recorder_status.default,
+    aws_config_delivery_channel.main
+  ]
 }
 
 module "cis_1_4_root_mfa_check" {
@@ -69,15 +163,24 @@ module "cis_1_4_root_mfa_check" {
   rule_name         = "cis-1-4-root-mfa-check"
   description       = "CIS 1.4: Ensure MFA is enabled for the root user"
   source_identifier = "ROOT_ACCOUNT_MFA_ENABLED" #root-account-mfa-enabled
+  
+  config_depends_on = [
+    aws_config_configuration_recorder_status.default,
+    aws_config_delivery_channel.main
+  ]
 
 }
 
 module "cis_1_7_iam_password_policy" {
   source            = "../../modules/aws_config_rule"
   rule_name         = "cis-1-7-check-iam-policy"
-  description       = "CIS 1.7: Ensure IAM password policy requires minimum length of 14 or greater Ensure IAM password policy requires minimum length of 14 or greater"
+  description       = "CIS 1.7: Ensure IAM password policy requires minimum length of 14 or greater"
   source_identifier = "IAM_PASSWORD_POLICY"
 
+  config_depends_on = [
+    aws_config_configuration_recorder_status.default,
+    aws_config_delivery_channel.main
+  ]
 }
 
 module "cis_1_8_root_mfa_console_users" {
@@ -86,4 +189,8 @@ module "cis_1_8_root_mfa_console_users" {
   description       = "CIS 1.9: Ensure MFA is enabled for console users"
   source_identifier = "MFA_ENABLED_FOR_IAM_CONSOLE_ACCESS" 
 
+  config_depends_on = [
+    aws_config_configuration_recorder_status.default,
+    aws_config_delivery_channel.main
+  ]
 }
