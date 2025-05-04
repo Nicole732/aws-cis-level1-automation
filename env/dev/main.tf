@@ -23,7 +23,7 @@ resource "random_integer" "unique_id" {
 
 module "sns" {
   source     = "../../modules/sns_topic"
-  topic_name = "cis-compliance-alerts"
+  topic_name = "cis11-conctact-email-alerts"
   email      = var.alert_email
 }
 
@@ -205,12 +205,18 @@ module "cis_1_9_mfa_iam_console_users" {
 
 ### Event driven controls: CloudWatch(Event Bridge) + CloudTrail + SNS  
 #### CIS 1.6: Detects Root Account Usage ###
+module "sns_eventbridge_alert" {
+  source     = "../../modules/sns_topic"
+  topic_name = "cis-eventbridge-alerts"
+  email      = var.alert_email
+}
+
 
 module "cis_1_6_root_user" {
   source        = "../../modules/cloudwatch_eventbridge"
   rule_name     = "cis-1-6-root-activity"
   description   = "CIS 1.6: Alert on any use of root account"
-  sns_topic_arn = module.sns.arn
+  sns_topic_arn = module.sns_eventbridge_alert.topic_arn
 
   event_pattern = jsonencode({
     source = ["aws.signin", "aws.console", "aws.cloudtrail"]
@@ -231,7 +237,7 @@ module "cis_1_10_initial_access_key" {
   source        = "../../modules/cloudwatch_eventbridge"
   rule_name     = "cis-1-10-access-key-at-user-creation"
   description   = "CIS 1.10: Alert on creation of IAM user with access key"
-  sns_topic_arn = module.sns.arn
+  sns_topic_arn = module.sns_eventbridge_alert.topic_arn
 
   event_pattern = jsonencode({
     source        = ["aws.iam"],
