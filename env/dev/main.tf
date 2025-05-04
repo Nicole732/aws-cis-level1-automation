@@ -256,4 +256,5 @@ module "cis_1_10_initial_access_key" {
   })
 }
 
-
+## Detect and  alert controls with CloudWatch (Alarms)  + SNS
+## CIS: 4.3 Ensure usage of the 'root' account is monitored 
