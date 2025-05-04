@@ -161,6 +161,8 @@ module "cis_1_3_root_key_check" {
   ]
 }
 
+#CIS 1.4 Ensure MFA is enabled for the 'root' user account
+
 module "cis_1_4_root_mfa_check" {
   source            = "../../modules/aws_config_rule"
   rule_name         = "cis-1-4-root-mfa-check"
@@ -174,6 +176,8 @@ module "cis_1_4_root_mfa_check" {
 
 }
 
+#CIS 1.7 Ensure IAM password policy requires minimum length of 14 or greater 
+
 module "cis_1_7_iam_password_policy" {
   source            = "../../modules/aws_config_rule"
   rule_name         = "cis-1-7-check-iam-policy"
@@ -186,7 +190,8 @@ module "cis_1_7_iam_password_policy" {
   ]
 }
 
-module "cis_1_8_root_mfa_console_users" {
+#CIS 1.9 Ensure multi-factor authentication (MFA) is enabled for all IAM users that have a console password 
+module "cis_1_9_root_mfa_console_users" {
   source            = "../../modules/aws_config_rule"
   rule_name         = "cis-1-9-console-mfa-check"
   description       = "CIS 1.9: Ensure MFA is enabled for console users"
@@ -197,3 +202,6 @@ module "cis_1_8_root_mfa_console_users" {
     aws_config_delivery_channel.main
   ]
 }
+
+
+#####
