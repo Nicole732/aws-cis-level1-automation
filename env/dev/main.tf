@@ -263,11 +263,17 @@ module "sns_cloudwatch_alarms" {
   email      = var.alert_email
 }
 
+resource "aws_s3_bucket" "trail_bucket" {
+  bucket        = "cis-cloudtrail-bucket-${random_pet.bucket_name.id}-${random_integer.unique_id.result}"
+  force_destroy = true
+}
+
 ## CIS: 4.3 Ensure usage of the 'root' account is monitored 
 module "cis_4_3_root_usage" {
   source             = "../../modules/cloudwatch_alarm"
   create_log_group   = false
-  log_group_name     = "/aws/cloudtrail/logs/cis4-3"
+  log_group_name     = "/aws/cloudtrail/logs/"
+  s3_bucket_name =  aws_s3_bucket.trail_bucket.bucket
   filter_pattern     = <<EOF
 { ($.userIdentity.type = "Root") && ($.eventType != "AwsServiceEvent") }
   EOF
@@ -283,7 +289,8 @@ module "cis_4_3_root_usage" {
 module "cis_4_8_s3_policy_change" {
   source           = "../../modules/cloudwatch_alarm"
   create_log_group = false
-  log_group_name   = "/aws/cloudtrail/logs/4-8"
+  log_group_name   = "/aws/cloudtrail/logs/"
+  s3_bucket_name =  aws_s3_bucket.trail_bucket.bucket
   #filter_pattern        = "{ ($.eventName = \\"PutBucketPolicy\\") || ($.eventName = \\"DeleteBucketPolicy\\") || ($.eventName = \\"PutBucketAcl\\") || ($.eventName = \\"PutBucketCors\\") || ($.eventName = \\"PutBucketLogging\\") || ($.eventName = \\"PutBucketReplication\\") || ($.eventName = \\"PutBucketLifecycle\\") || ($.eventName = \\"PutBucketVersioning\\") }"
   filter_pattern     = <<EOF
 { ($.eventName = "PutBucketPolicy") ||
