@@ -44,3 +44,8 @@ variable "topic_arn" {
   description = "ARN of the SNS topic"
   type        = string
 }
+
+variable "s3_bucket_name" {
+  type        = string
+  description = "S3 bucket name for CloudTrail log delivery"
+}
