@@ -1,6 +1,6 @@
 resource "aws_cloudwatch_event_rule" "alert" {
-  name        = var.rule_name
-  description = var.description
+  name          = var.rule_name
+  description   = var.description
   event_pattern = var.event_pattern
 }
 
