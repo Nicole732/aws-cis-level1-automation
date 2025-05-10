@@ -1,9 +1,14 @@
 name: Terraform CI/CD Pipeline
 
+#pipeline is triggered on pull request from any branch and pushes on main
 on:
   push:
     branches:
       - main
+      
+  pull_request:
+    branches:
+      - "*"
 
 jobs:
   terraform:
@@ -31,17 +36,21 @@ jobs:
 
       # Terraform Init
       - name: Terraform Init
+        working-directory: env/dev
         run: terraform init
 
       # Terraform Validate
       - name: Terraform Validate
+        working-directory: env/dev
         run: terraform validate
 
       # Terraform Plan
       - name: Terraform Plan
+        working-directory: env/dev
         run: terraform plan -out=tfplan
 
       # Terraform Apply
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
+        working-directory: env/dev
         run: terraform apply -auto-approve tfplan
