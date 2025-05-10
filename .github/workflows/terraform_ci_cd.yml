@@ -1,14 +1,14 @@
 name: Terraform CI/CD Pipeline
 
-#pipeline is triggered on pull request from any branch and pushes on main
+#pipeline is triggered on pull request from and pushes on main
 on:
   push:
     branches:
       - main
       
-  #pull_request:
-    #branches:
-    #  - "*"
+  pull_request:
+    branches:
+      - main
 
 jobs:
   terraform:
@@ -51,7 +51,7 @@ jobs:
         working-directory: env/dev
         run: terraform validate
 
-      # Terraform Plan
+      # Terraform Planjusiing terraform.tfvars
       - name: Terraform Plan 
         working-directory: env/dev
         run: terraform plan -var-file="terraform.tfvars" -out=tfplan
