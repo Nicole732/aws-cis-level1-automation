@@ -54,7 +54,7 @@ jobs:
       # Terraform Planjusiing terraform.tfvars
       - name: Terraform Plan 
         working-directory: env/dev
-        run: terraform plan -var-file="env/dev/terraform.tfvars" -out=tfplan
+        run: terraform plan -var-file="./terraform.tfvars" -out=tfplan
 
       # Terraform Apply
       - name: Terraform Apply
