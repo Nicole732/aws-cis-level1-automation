@@ -1,0 +1,47 @@
+name: Terraform CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    name: Validate & Deploy Terraform
+    runs-on: ubuntu-latest
+
+    env:
+      TF_WORKSPACE: default
+      AWS_REGION: us-east-1
+
+    steps:
+      # Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Set up Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.7
+
+      # Terraform FMT
+      - name: Terraform Format
+        run: terraform fmt -check -recursive
+
+      # Terraform Init
+      - name: Terraform Init
+        run: terraform init
+
+      # Terraform Validate
+      - name: Terraform Validate
+        run: terraform validate
+        
+      # Terraform Plan
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      # Terraform Apply
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply -auto-approve tfplan
