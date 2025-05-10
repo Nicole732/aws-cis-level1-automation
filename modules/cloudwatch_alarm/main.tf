@@ -38,14 +38,14 @@ resource "aws_iam_role_policy" "cloudtrail_logs_policy" {
 }
 
 resource "aws_cloudtrail" "cis_trail" {
-  count                          = var.create_log_group ? 1 : 0
-  name                           = "cis-compliance-trail"
-  s3_bucket_name                 = var.s3_bucket_name
-  include_global_service_events  = true
-  is_multi_region_trail          = true
-  enable_logging                 = true
-  cloud_watch_logs_group_arn     = aws_cloudwatch_log_group.cloudtrail_log_group[0].arn
-  cloud_watch_logs_role_arn      = aws_iam_role.cloudtrail_logs_role[0].arn
+  count                         = var.create_log_group ? 1 : 0
+  name                          = "cis-compliance-trail"
+  s3_bucket_name                = var.s3_bucket_name
+  include_global_service_events = true
+  is_multi_region_trail         = true
+  enable_logging                = true
+  cloud_watch_logs_group_arn    = aws_cloudwatch_log_group.cloudtrail_log_group[0].arn
+  cloud_watch_logs_role_arn     = aws_iam_role.cloudtrail_logs_role[0].arn
 
   depends_on = [aws_iam_role_policy.cloudtrail_logs_policy]
 }

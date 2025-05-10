@@ -273,7 +273,7 @@ module "cis_4_3_root_usage" {
   source             = "../../modules/cloudwatch_alarm"
   create_log_group   = false
   log_group_name     = "/aws/cloudtrail/logs/"
-  s3_bucket_name =  aws_s3_bucket.trail_bucket.bucket
+  s3_bucket_name     = aws_s3_bucket.trail_bucket.bucket
   filter_pattern     = <<EOF
 { ($.userIdentity.type = "Root") && ($.eventType != "AwsServiceEvent") }
   EOF
@@ -290,7 +290,7 @@ module "cis_4_8_s3_policy_change" {
   source           = "../../modules/cloudwatch_alarm"
   create_log_group = false
   log_group_name   = "/aws/cloudtrail/logs/"
-  s3_bucket_name =  aws_s3_bucket.trail_bucket.bucket
+  s3_bucket_name   = aws_s3_bucket.trail_bucket.bucket
   #filter_pattern        = "{ ($.eventName = \\"PutBucketPolicy\\") || ($.eventName = \\"DeleteBucketPolicy\\") || ($.eventName = \\"PutBucketAcl\\") || ($.eventName = \\"PutBucketCors\\") || ($.eventName = \\"PutBucketLogging\\") || ($.eventName = \\"PutBucketReplication\\") || ($.eventName = \\"PutBucketLifecycle\\") || ($.eventName = \\"PutBucketVersioning\\") }"
   filter_pattern     = <<EOF
 { ($.eventName = "PutBucketPolicy") ||
