@@ -52,9 +52,9 @@ jobs:
         run: terraform validate
 
       # Terraform Plan
-      - name: Terraform Plan
+      - name: Terraform Plan 
         working-directory: env/dev
-        run: terraform plan -out=tfplan
+        run: terraform plan -var-file="terraform.tfvars" -out=tfplan
 
       # Terraform Apply
       - name: Terraform Apply
