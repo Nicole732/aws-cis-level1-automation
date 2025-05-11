@@ -5,7 +5,7 @@ variable "create_log_group" {
 }
 
 variable "log_group_name" {
-  description = "CloudTrail log group name (exisssting or created)"
+  description = "CloudTrail log group name (existing or created)"
   type        = string
 }
 
