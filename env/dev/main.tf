@@ -112,6 +112,9 @@ resource "aws_iam_role" "config_role" {
       }
     ]
   })
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # Attach managed policy for AWS Config
