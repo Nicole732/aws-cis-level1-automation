@@ -7,6 +7,7 @@ on:
       - main
       
   pull_request:
+    types: [closed]
     branches:
       - main
 
@@ -23,6 +24,7 @@ jobs:
       # Checkout code
       - name: Checkout repository
         uses: actions/checkout@v3
+
       # authenticates with AWS
       - name: 'Configure AWS credentials'
         uses: aws-actions/configure-aws-credentials@v1
@@ -39,6 +41,7 @@ jobs:
 
       # Terraform FMT
       - name: Terraform Format
+        working-directory: env/dev
         run: terraform fmt -check -recursive || echo "⚠️ Some files are not formatted"
 
       # Terraform Init
@@ -54,10 +57,16 @@ jobs:
       # Terraform Planjusiing terraform.tfvars
       - name: Terraform Plan 
         working-directory: env/dev
-        run: terraform plan -var="alert_email=${{ secrets.ALERT_EMAIL }}" -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID}}"  -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY}}" -var="aws_region=${{ secrets.AWS_REGION }}"-out=tfplan
+        run: |
+          terraform plan \
+            -var="alert_email=${{ secrets.ALERT_EMAIL }}" \
+            -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID}}" \
+            -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY}}" \
+            -var="aws_region=${{ secrets.AWS_REGION }}" \
+            -out=tfplan
 
       # Terraform Apply
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         working-directory: env/dev
         run: terraform apply -auto-approve tfplan
