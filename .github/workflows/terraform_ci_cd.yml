@@ -54,7 +54,7 @@ jobs:
       # Terraform Planjusiing terraform.tfvars
       - name: Terraform Plan 
         working-directory: env/dev
-        run: terraform plan -var="alert_email=${{ secrets.ALERT_EMAIL }}" -out=tfplan
+        run: terraform plan -var="alert_email=${{ secrets.ALERT_EMAIL }}" -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID}}"  -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY}}" -var="aws_region=${{ secrets.AWS_REGION }}"-out=tfplan
 
       # Terraform Apply
       - name: Terraform Apply
