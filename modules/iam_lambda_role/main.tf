@@ -12,6 +12,9 @@ resource "aws_iam_role" "lambda_exec_role" {
       }
     ]
   })
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "basic_execution" {
