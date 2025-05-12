@@ -56,8 +56,8 @@ jobs:
         uses: bridgecrewio/checkov-action@v12
         with:
           directory: env/dev
-          continue-on-error: true
           soft_fail: false
+        continue-on-error: true
 
       # Trivy (non-blocking)
       - name: Install Trivy
@@ -66,8 +66,8 @@ jobs:
           sudo dpkg -i trivy_0.50.1_Linux-64bit.deb
 
       - name: Run Trivy
-        continue-on-error: true
         run: trivy config env/dev --severity HIGH,CRITICAL --exit-code 1
+        continue-on-error: true
 
   # ----------------------------
   # Terraform Plan & Apply
