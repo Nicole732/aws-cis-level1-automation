@@ -1,4 +1,4 @@
-name: Terraform CI/CD Pipeline
+name: Terraform CI/CD Pipeline with security checks
 
 #pipeline is triggered on pull request from and pushes on main
 on:
@@ -71,3 +71,4 @@ jobs:
         working-directory: env/dev
         run: terraform apply -parallelism=1 -auto-approve tfplan 
     
+
