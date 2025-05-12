@@ -57,13 +57,13 @@ jobs:
         with:
           directory: env/dev
           soft_fail: false
-        continue-on-error: true
+        continue-on-error: true 
 
       # Trivy (non-blocking)
       - name: Install Trivy
         run: |
-          wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.50.1_Linux-64bit.deb
-          sudo dpkg -i trivy_0.50.1_Linux-64bit.deb
+          wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_Linux-64bit.deb
+          sudo dpkg -i trivy_Linux-64bit.deb
 
       - name: Run Trivy
         run: trivy config env/dev --severity HIGH,CRITICAL --exit-code 1
