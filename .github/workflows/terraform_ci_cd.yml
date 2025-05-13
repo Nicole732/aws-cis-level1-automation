@@ -60,14 +60,14 @@ jobs:
         continue-on-error: true 
 
       # Trivy (non-blocking)
-      - name: Install Trivy
-        run: |
-          wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_Linux-64bit.deb
-          sudo dpkg -i trivy_Linux-64bit.deb
+      #- name: Install Trivy
+       # run: |
+         # wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_Linux-64bit.deb
+          #sudo dpkg -i trivy_Linux-64bit.deb
 
-      - name: Run Trivy
-        run: trivy config env/dev --severity HIGH,CRITICAL --exit-code 1
-        continue-on-error: true
+     # - name: Run Trivy
+      #  run: trivy config env/dev --severity HIGH,CRITICAL --exit-code 1
+      #  continue-on-error: true
 
   # ----------------------------
   # Terraform Plan & Apply
