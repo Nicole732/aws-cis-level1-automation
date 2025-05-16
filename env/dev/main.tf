@@ -113,7 +113,8 @@ resource "aws_iam_role" "config_role" {
     ]
   })
   lifecycle {
-    prevent_destroy = true
+    #prevent_destroy = true
+    prevent_destroy = false
     ignore_changes  = [tags]
   }
 }
