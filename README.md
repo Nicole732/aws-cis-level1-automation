@@ -17,9 +17,8 @@ We build a baseline automation solution to ensure compliance with  CIS AWS Found
    - Generate and securely store access keys (do _not_ use your root account).  
    - Install and configure the AWS CLI locally in VSC with your dev user’s access keys.  
    - In the AWS Console, create a CloudWatch Log Group named:
-     ```
-     /aws/cloudtrail/logs/
-     ```
+     - `/aws/cloudtrail/logs/`
+       
    - Delete any existing IAM roles named:
      - `aws-config-role`
      - `cis1_1-contact-check-role*`
