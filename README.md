@@ -28,6 +28,13 @@ We build a baseline automation solution to ensure compliance with  CIS AWS Found
    - Verify it’s properly configured to work with your AWS credentials.
 
 ## Architecture
+We built the architecture below for our solution, using AWS services. Our solution uses three main design patterns to automate compliance:
+
+1. Controls detected by setting up AWS config Managed rule. Example: CIS 1.3 Ensure no 'root' user account access key exists
+2. Controls detecting a particular event, generating cloudwatch alarms, and alerts for review and remediation. Example: CIS 4.3 Ensure usage of the 'root' account is monitored 
+3. Controls continuously checking if manual configuration is set-up, based on a cron event driven pattern, and alerts for manual remediation. Example: CIS 1.1  Maintain current contact details 
+
+here is the architecture for this end-to-end automation: ![Architecture - CIS AWS Foundations Benchmarks Level 1 Automation](./assets/images/awsarchiteeeeturecompliance-fineleventb.png)
 
 ## Use
 
