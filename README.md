@@ -36,7 +36,7 @@ We built the architecture below for our solution, using AWS services. Our soluti
 
 here is the architecture for this end-to-end automation: ![Architecture - CIS AWS Foundations Benchmarks Level 1 Automation](./assets/images/awsarchiteeeeturecompliance-fineleventb.png)
 
-Mapping table of CIS AWS Controls implemented as per above architecture:
+Mapping table of some CIS AWS Controls implemented as per above architecture:
 
 | CIS AWS Foundations  Benchmark Control                                                                  |  Main AWS Services                            | Compliance Goal                                                                                          | AWS Config Managed Rule / Metrics / CloudTrail API Logs  |
 |---------------------------------------------------------------------------------------------------------|-----------------------------------------------|----------------------------------------------------------------------------------------------------------|----------------------------------------------------------|
