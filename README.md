@@ -94,3 +94,5 @@ By contributing, you agree to retain attribution to the original authors of this
 ## License
 
 This project is licensed under the [MIT License](LICENSE). See the LICENSE file for details.
+
+## Copyright (c) 2025 [Nicole T. K.]
