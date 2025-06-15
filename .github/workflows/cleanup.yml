@@ -4,11 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 0 * * *' # Runs daily at midnight (UTC)
-<<<<<<< HEAD
-    ##- cron: '*/1 * * * *' #Runs immediately
-=======
     #- cron: '*/1 * * * *' #Runs immediately
->>>>>>> fe274a20723a68bffa698eabf45b3fbb7013ce79
 
 jobs:
   terraform-cleanup:
